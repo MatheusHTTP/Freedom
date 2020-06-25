@@ -7,15 +7,19 @@ public class Raycaster : MonoBehaviour
 {
     public TextMesh textDebug;
     public GameObject crosshair;
-    float counter=3;
+    float counter=2;
     public FPSWalk fpswalk;
+    public GameObject loadbar;
     public GameObject[] load = new GameObject[8];
 
-    bool slotKey = false;
+    float part;
+    float dec;
+    int inc = 0;
     // Start is called before the first frame update
     void Start()
     {
-
+        part = counter / 8;
+        dec = counter - part;
     }
 
     // Update is called once per frame
@@ -39,51 +43,84 @@ public class Raycaster : MonoBehaviour
             //se o objeto tiver tag player (iteragivel)
             if (hit.transform.gameObject.CompareTag("Player"))
             {
-                //troca cor do crosshair
-                //crosshair.GetComponent<Image>().CrossFadeColor(Color.green, .5f, false, false);
-                
                 //decrementa o contador 
-                counter -= Time.deltaTime;
+                counter -= Time.deltaTime;counter -= Time.deltaTime;
+                if (counter < dec)
+                {
+                    load[inc].SetActive(true);
+                    dec -= part;
+                    inc++;
+                }
                 //se o contador for < 0 chama a funça no objeto ButtonAction()
                 if (counter < 0)
                 {
+                    load[7].SetActive(true);
                     hit.transform.gameObject.SendMessageUpwards("ButtonAction");
+                    dec = counter - part;
+                    inc = 0;
                     counter = 2;//reseta o contador
                 }
             } // senao verifica se o objeto é com o tag andavel
             else if(hit.transform.gameObject.CompareTag("Walkable"))
             {
-                //crosshair.GetComponent<Image>().CrossFadeColor(Color.blue, .5f, false, false);
-                hit.transform.GetComponent<SpriteRenderer>().color = new Color(1,1,1,.7f); ///Cor do pépé
+                hit.transform.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, .7f);
                 counter -= Time.deltaTime;
+                if (counter < dec)
+                {
+                    load[inc].SetActive(true);
+                    dec -= part;
+                    inc++;
+                }
                 if (counter < 0)
                 {
+                    load[7].SetActive(true);
                     //anda com o personagem até o ponto de caminhada
                     fpswalk.positionToGo = hit.transform.position;
+                    dec = counter - part;
+                    inc = 0;
                     counter = 2;//reseta o contador
                 }
             }
-            else if (hit.transform.gameObject.CompareTag("Key"))
+            else if (hit.transform.gameObject.CompareTag("Book"))
             {
                 counter -= Time.deltaTime;
+                if (counter < dec)
+                {
+                    load[inc].SetActive(true);
+                    dec -= part;
+                    inc++;
+                }
                 if (counter < 0)
                 {
-                    slotKey = true;
+                    load[7].SetActive(true);
+                    hit.transform.gameObject.SendMessageUpwards("PullBook");
+                    dec = counter - part;
+                    inc = 0;
                     counter = 2;//reseta o contador
                 }
             }
             else
             {
+                //loadbar.SetActive(false);
+                load[0].SetActive(false);
+                load[1].SetActive(false);
+                load[2].SetActive(false);
+                load[3].SetActive(false);
+                load[4].SetActive(false);
+                load[5].SetActive(false);
+                load[6].SetActive(false);
+                load[7].SetActive(false);
+                //loadbar.SetActive(true);
+                dec = counter - part;
+                inc = 0;
                 //se nao for nada disso reseta o contador
                 counter = 2;
                 //pinta o crossrair de vermelho
-                //crosshair.GetComponent<Image>().CrossFadeColor(Color.red, .5f, false, false);
             }
         }
         else
         {
-            //se nao da raycast o crosshair some
-            //crosshair.GetComponent<Image>().CrossFadeColor(Color.black, .0f, false, false);
+
         }
 
        

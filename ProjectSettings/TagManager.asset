@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Walkable
   - Key
+  - Book
   layers:
   - Default
   - TransparentFX
